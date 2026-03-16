@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PBD Compliance Hub</title>
+
+  <!-- CSS: all three files live in the repo root -->
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="layout.css">
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- HEADER -->
+    <div class="app-header">
+      <div>
+        <div class="app-title">PBD Compliance Hub</div>
+        <div class="app-subtitle">
+          NJ Beach Equipment &amp; Experience &middot; Season
+          <input class="season-input" id="season-year" value="2026" maxlength="4"
+                 title="Click to edit season year"
+                 onchange="Controller.updateSeason(this.value)">
+        </div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="Controller.openModal('add-town')">+ Add town</button>
+    </div>
+
+    <!-- NAV -->
+    <nav class="nav">
+      <button class="nav-btn active" data-tab="dashboard" onclick="Controller.navigate('dashboard')">Dashboard</button>
+      <button class="nav-btn"        data-tab="towns"     onclick="Controller.navigate('towns')">Towns</button>
+      <button class="nav-btn"        data-tab="permits"   onclick="Controller.navigate('permits')">Permits</button>
+      <button class="nav-btn"        data-tab="deadlines" onclick="Controller.navigate('deadlines')">Deadlines</button>
+      <button class="nav-btn"        data-tab="expansion" onclick="Controller.navigate('expansion')">Expansion</button>
+    </nav>
+
+    <!-- TAB PANELS -->
+    <main>
+      <div class="tab active" id="tab-dashboard"></div>
+      <div class="tab"        id="tab-towns"></div>
+      <div class="tab"        id="tab-permits"></div>
+      <div class="tab"        id="tab-deadlines"></div>
+      <div class="tab"        id="tab-expansion"></div>
+    </main>
+
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- Add Town -->
+  <div class="modal-overlay" id="modal-add-town" onclick="Controller.overlayClick(event,'add-town')">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Add new town</span>
+        <button class="modal-close" onclick="Controller.closeModal('add-town')">&#10005;</button>
+      </div>
+      <div class="form-group"><label class="form-label">Town name</label><input class="form-input" id="at-name" placeholder="e.g. Belmar"></div>
+      <div class="form-group"><label class="form-label">County</label>
+        <select class="form-input" id="at-county">
+          <option>Monmouth</option><option>Ocean</option><option>Atlantic</option><option>Cape May</option><option>Middlesex</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Beach badge program</label>
+        <select class="form-input" id="at-badge"><option>Seasonal</option><option>Daily</option><option>Free beach</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Initial permit status</label>
+        <select class="form-input" id="at-status"><option value="pending">Pending</option><option value="compliant">Compliant</option><option value="expired">Expired</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Contact / notes</label><input class="form-input" id="at-notes" placeholder="Contact name, phone, etc."></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="Controller.closeModal('add-town')">Cancel</button>
+        <button class="btn btn-primary" onclick="Controller.submitAddTown()">Add town</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Town -->
+  <div class="modal-overlay" id="modal-edit-town" onclick="Controller.overlayClick(event,'edit-town')">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Edit town</span>
+        <button class="modal-close" onclick="Controller.closeModal('edit-town')">&#10005;</button>
+      </div>
+      <div class="form-group"><label class="form-label">Town name</label><input class="form-input" id="et-name"></div>
+      <div class="form-group"><label class="form-label">County</label>
+        <select class="form-input" id="et-county"><option>Monmouth</option><option>Ocean</option><option>Atlantic</option><option>Cape May</option><option>Middlesex</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Beach badge program</label>
+        <select class="form-input" id="et-badge"><option>Seasonal</option><option>Daily</option><option>Free beach</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Contact</label><input class="form-input" id="et-contact"></div>
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="et-phone"></div>
+      <div class="form-group"><label class="form-label">License fee</label><input class="form-input" id="et-fee"></div>
+      <div class="form-group"><label class="form-label">Setup zones</label><input class="form-input" id="et-zones" type="number" min="1"></div>
+      <div class="modal-actions">
+        <button class="btn btn-danger btn-sm" onclick="Controller.deleteTown()">Delete town</button>
+        <button class="btn" onclick="Controller.closeModal('edit-town')">Cancel</button>
+        <button class="btn btn-primary" onclick="Controller.submitEditTown()">Save changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Permit -->
+  <div class="modal-overlay" id="modal-permit" onclick="Controller.overlayClick(event,'permit')">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="permit-modal-title">Add permit</span>
+        <button class="modal-close" onclick="Controller.closeModal('permit')">&#10005;</button>
+      </div>
+      <div class="form-group"><label class="form-label">Permit / requirement name</label><input class="form-input" id="pm-name" placeholder="e.g. Beach Vendor License"></div>
+      <div class="form-group"><label class="form-label">Type</label>
+        <select class="form-input" id="pm-type"><option value="municipal">Municipal</option><option value="state">State</option><option value="federal">Federal</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-input" id="pm-status">
+          <option value="done">Active / approved</option>
+          <option value="warn">Expiring soon</option>
+          <option value="miss">Missing / required</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Expiration or due date</label><input class="form-input" id="pm-exp" placeholder="2026-09-30 or 'Required'"></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="Controller.closeModal('permit')">Cancel</button>
+        <button class="btn btn-primary" onclick="Controller.submitPermit()">Save permit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS: Model → View → Controller, all in repo root, loaded once at end of body -->
+  <script src="model.js"></script>
+  <script src="view.js"></script>
+  <script src="controller.js"></script>
+
+</body>
+</html>
