@@ -1,0 +1,90 @@
+/* ============================================================
+   layout.css — App shell, header, nav, tab panels, grids
+   ============================================================ */
+
+/* ── App shell ───────────────────────────────────────────── */
+.app-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 16px 60px;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 10px;
+}
+
+.app-title { font-size: 22px; font-weight: 600; color: var(--tx); }
+
+.app-subtitle {
+  font-size: 11px;
+  color: var(--tx2);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.season-input {
+  font-size: 11px;
+  color: var(--tx2);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed var(--bd2);
+  font-family: var(--font);
+  width: 38px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.season-input:focus { outline: none; border-bottom-color: var(--ocean); color: var(--tx); }
+
+/* ── Nav ─────────────────────────────────────────────────── */
+.nav {
+  display: flex;
+  gap: 2px;
+  background: var(--bg);
+  border-radius: var(--rl);
+  padding: 4px;
+  margin-bottom: 20px;
+  border: 0.5px solid var(--bd);
+}
+
+.nav-btn {
+  flex: 1;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
+  border-radius: var(--rm);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tx2);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.nav-btn.active        { background: var(--bg2); color: var(--tx); border: 0.5px solid var(--bd); }
+.nav-btn:hover:not(.active) { color: var(--tx); }
+
+/* ── Tabs ────────────────────────────────────────────────── */
+.tab        { display: none; }
+.tab.active { display: block; }
+
+/* ── Grids ───────────────────────────────────────────────── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}

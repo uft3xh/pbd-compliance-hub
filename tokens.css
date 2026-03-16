@@ -1,0 +1,72 @@
+/* ============================================================
+   tokens.css — Design tokens: colors, spacing, typography
+   ============================================================ */
+
+:root {
+  /* Brand */
+  --ocean:   #1B6CA8;
+  --ocean-l: #EBF4FB;
+  --ocean-d: #0C3D6A;
+
+  /* Status */
+  --gr:   #2E7D5A;
+  --gr-l: #E8F5EE;
+  --gr-d: #1B4D36;
+
+  --am:   #B5700F;
+  --am-l: #FEF3E2;
+  --am-d: #7A4A08;
+
+  --re:   #C0392B;
+  --re-l: #FDECEC;
+  --re-d: #7A2218;
+
+  /* Neutrals */
+  --bg:  #ffffff;
+  --bg2: #f7f6f2;
+  --tx:  #1a1a18;
+  --tx2: #6b6b66;
+  --bd:  rgba(0, 0, 0, 0.12);
+  --bd2: rgba(0, 0, 0, 0.25);
+
+  /* Radii */
+  --rm: 8px;
+  --rl: 12px;
+
+  /* Typography */
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:      #1c1c1a;
+    --bg2:     #252523;
+    --tx:      #e8e6df;
+    --tx2:     #9a9890;
+    --bd:      rgba(255, 255, 255, 0.12);
+    --bd2:     rgba(255, 255, 255, 0.25);
+    --ocean-l: #0d2d42;
+    --ocean-d: #7ec3f0;
+    --gr-l:    #0d2418;
+    --gr-d:    #6fcfa0;
+    --am-l:    #2a1e08;
+    --am-d:    #f5b855;
+    --re-l:    #2a0f0d;
+    --re-d:    #f07070;
+  }
+}
+
+/* ── Base reset ────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--tx);
+  background: var(--bg2);
+  min-height: 100vh;
+}
