@@ -1,0 +1,672 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ocean:#1B6CA8;--ocean-l:#EBF4FB;--ocean-d:#0C3D6A;
+  --gr:#2E7D5A;--gr-l:#E8F5EE;--gr-d:#1B4D36;
+  --am:#B5700F;--am-l:#FEF3E2;--am-d:#7A4A08;
+  --re:#C0392B;--re-l:#FDECEC;--re-d:#7A2218;
+  --tx:var(--color-text-primary);--tx2:var(--color-text-secondary);
+  --bg:var(--color-background-primary);--bg2:var(--color-background-secondary);
+  --bd:var(--color-border-tertiary);--bd2:var(--color-border-secondary);
+  --rm:var(--border-radius-md);--rl:var(--border-radius-lg)
+}
+body{font-family:var(--font-sans,system-ui);color:var(--tx);font-size:13px}
+.app{padding:14px 0}
+.nav{display:flex;gap:2px;background:var(--bg2);border-radius:var(--rl);padding:4px;margin-bottom:18px;border:0.5px solid var(--bd)}
+.nb{flex:1;padding:7px 2px;border:none;background:transparent;border-radius:var(--rm);font-size:11.5px;font-weight:500;color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.nb.on{background:var(--bg);color:var(--tx);border:0.5px solid var(--bd)}
+.nb:hover:not(.on){color:var(--tx)}
+.tab{display:none}.tab.on{display:block}
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:10px}
+.hdr-t{font-size:20px;font-weight:500;color:var(--tx)}
+.hdr-s{font-size:11px;color:var(--tx2);margin-top:3px;display:flex;align-items:center;gap:5px}
+.season-input{font-size:11px;color:var(--tx2);background:transparent;border:none;border-bottom:0.5px dashed var(--bd2);font-family:inherit;width:38px;text-align:center;cursor:pointer;padding:0 2px}
+.season-input:focus{outline:none;border-bottom-color:var(--ocean);color:var(--tx)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:16px}
+.sc{background:var(--bg2);border-radius:var(--rm);padding:12px;text-align:center;border:0.5px solid var(--bd)}
+.sn{font-size:24px;font-weight:500;line-height:1}
+.sl{font-size:11px;color:var(--tx2);margin-top:3px}
+.sn.oc{color:var(--ocean)}.sn.gr{color:var(--gr)}.sn.am{color:var(--am)}.sn.re{color:var(--re)}
+.card{background:var(--bg);border:0.5px solid var(--bd);border-radius:var(--rl);padding:14px;margin-bottom:12px}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.ct{font-size:14px;font-weight:500}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:500;white-space:nowrap}
+.b-gr{background:var(--gr-l);color:var(--gr-d)}.b-am{background:var(--am-l);color:var(--am-d)}.b-re{background:var(--re-l);color:var(--re-d)}.b-oc{background:var(--ocean-l);color:var(--ocean-d)}.b-gy{background:var(--bg2);color:var(--tx2);border:0.5px solid var(--bd)}
+.btn{padding:6px 12px;border:0.5px solid var(--bd2);background:transparent;border-radius:var(--rm);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;color:var(--tx);transition:all .15s}
+.btn:hover{background:var(--bg2)}.btn:active{transform:scale(.98)}
+.btn-p{background:var(--ocean);color:#fff;border-color:var(--ocean)}.btn-p:hover{opacity:.88}
+.btn-s{padding:4px 9px;font-size:11px}
+.btn-w{width:100%;margin-top:10px}
+.sect{font-size:10px;font-weight:500;color:var(--tx2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.town-list{display:flex;flex-direction:column;gap:6px}
+.tr{display:grid;grid-template-columns:130px 1fr auto;align-items:center;gap:10px;padding:9px 12px;background:var(--bg2);border-radius:var(--rm);border:0.5px solid var(--bd);cursor:pointer;transition:all .15s}
+.tr:hover{border-color:var(--ocean)}
+.tr.exp{border-color:var(--ocean);border-bottom-left-radius:0;border-bottom-right-radius:0}
+.tn{font-size:12.5px;font-weight:500}
+.tc{font-size:10.5px;color:var(--tx2)}
+.tag-row{display:flex;gap:4px;flex-wrap:wrap}
+.pbar{height:4px;background:var(--bd);border-radius:99px;overflow:hidden;width:70px}
+.pf{height:100%;border-radius:99px;transition:width .3s}
+.pf.gr{background:var(--gr)}.pf.am{background:var(--am)}.pf.re{background:var(--re)}
+.dp{display:none;background:var(--ocean-l);border:0.5px solid var(--ocean);border-top:none;border-bottom-left-radius:var(--rm);border-bottom-right-radius:var(--rm);padding:12px}
+.dp.on{display:block}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.di label{color:var(--tx2);display:block;margin-bottom:1px;font-size:10.5px}
+.di span{font-weight:500;font-size:12px}
+.pl{display:flex;flex-direction:column;gap:5px}
+.pi{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--rm);background:var(--bg2);border:0.5px solid var(--bd)}
+.pi.done{border-color:var(--gr);background:var(--gr-l)}.pi.warn{border-color:var(--am);background:var(--am-l)}.pi.miss{border-color:var(--re);background:var(--re-l)}
+.pc{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;font-weight:700}
+.pc.done{background:var(--gr);color:#fff}.pc.warn{background:var(--am);color:#fff}.pc.miss{background:var(--re);color:#fff}
+.pn{font-size:11.5px;font-weight:500;flex:1}
+.pe{font-size:10.5px;color:var(--tx2);white-space:nowrap}
+.fb{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.chip{padding:4px 10px;border:0.5px solid var(--bd);border-radius:99px;font-size:11px;font-weight:500;cursor:pointer;background:transparent;color:var(--tx2);font-family:inherit;transition:all .15s}
+.chip.on{background:var(--ocean);color:#fff;border-color:var(--ocean)}
+.si{flex:1;min-width:100px;padding:6px 10px;border:0.5px solid var(--bd);border-radius:var(--rm);background:var(--bg2);font-family:inherit;font-size:12px;color:var(--tx)}
+.si:focus{outline:none;border-color:var(--ocean)}
+.dl{display:flex;flex-direction:column;gap:6px}
+.di2{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--rm);border:0.5px solid var(--bd)}
+.di2.urgent{border-color:var(--re);background:var(--re-l)}.di2.soon{border-color:var(--am);background:var(--am-l)}.di2.ok{border-color:var(--gr);background:var(--gr-l)}
+.dd{font-size:11px;font-weight:500;color:var(--tx2);min-width:50px}
+.dt{font-size:12px;font-weight:500;flex:1}
+.ds{font-size:10.5px;color:var(--tx2)}
+.ddays{font-size:11px;font-weight:600;min-width:54px;text-align:right}
+.ddays.urgent{color:var(--re)}.ddays.soon{color:var(--am)}.ddays.ok{color:var(--gr)}
+.pg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pc2{background:var(--bg2);border:0.5px solid var(--bd);border-radius:var(--rl);padding:12px;cursor:pointer;transition:all .15s}
+.pc2:hover{border-color:var(--ocean)}.pc2.on{border-color:var(--ocean);border-width:1.5px;background:var(--ocean-l)}
+.pname{font-size:13px;font-weight:500;margin-bottom:4px}
+.pdet{font-size:10.5px;color:var(--tx2);margin-bottom:7px}
+.sbar{height:4px;background:var(--bd);border-radius:99px;overflow:hidden}
+.sf{height:100%;border-radius:99px;background:var(--ocean)}
+.modal-wrap{display:none;background:rgba(0,0,0,.4);padding:40px 20px;align-items:flex-start;justify-content:center}
+.modal-wrap.on{display:flex}
+.modal{background:var(--bg);border-radius:var(--rl);border:0.5px solid var(--bd);padding:18px;width:100%;max-width:440px}
+.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mt{font-size:15px;font-weight:500}
+.mc{background:none;border:none;font-size:16px;cursor:pointer;color:var(--tx2);font-family:inherit;line-height:1}
+.fg{margin-bottom:12px}
+.fl{font-size:11px;color:var(--tx2);margin-bottom:4px;display:block}
+.fi{width:100%;padding:7px 10px;border:0.5px solid var(--bd);border-radius:var(--rm);background:var(--bg2);font-family:inherit;font-size:12px;color:var(--tx)}
+.fi:focus{outline:none;border-color:var(--ocean)}
+select.fi{cursor:pointer}
+.ma{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.note-box{margin-top:10px;padding:9px 12px;background:var(--bg2);border-radius:var(--rm);font-size:11.5px;color:var(--tx2);border:0.5px solid var(--bd);line-height:1.5}
+.inline-btns{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.empty{padding:20px;text-align:center;color:var(--tx2);font-size:12px}
+.pfr{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--rm);background:var(--bg2);border:0.5px solid var(--bd);margin-bottom:5px}
+.pfr.done{border-color:var(--gr);background:var(--gr-l)}.pfr.warn{border-color:var(--am);background:var(--am-l)}.pfr.miss{border-color:var(--re);background:var(--re-l)}
+</style>
+
+<div class="app">
+  <div class="hdr">
+    <div>
+      <div class="hdr-t">PBD Compliance Hub</div>
+      <div class="hdr-s">
+        NJ Beach Equipment &amp; Experience &middot; Season
+        <input class="season-input" id="season-year" value="2026" maxlength="4" onchange="updateSeason(this.value)" title="Click to edit season year">
+      </div>
+    </div>
+    <button class="btn btn-p btn-s" onclick="openAddTown()">+ Add town</button>
+  </div>
+
+  <div class="nav">
+    <button class="nb on" onclick="go('dash')">Dashboard</button>
+    <button class="nb" onclick="go('towns')">Towns</button>
+    <button class="nb" onclick="go('permits')">Permits</button>
+    <button class="nb" onclick="go('cal')">Deadlines</button>
+    <button class="nb" onclick="go('expand')">Expansion</button>
+  </div>
+
+  <div class="tab on" id="tab-dash">
+    <div class="stats" id="dash-stats"></div>
+    <div class="g2">
+      <div class="card">
+        <div class="ch"><span class="ct">Urgent deadlines</span><span class="badge b-re" id="urg-count"></span></div>
+        <div class="dl" id="dash-dl"></div>
+        <button class="btn btn-s btn-w" onclick="go('cal')">View all deadlines</button>
+      </div>
+      <div class="card">
+        <div class="ch"><span class="ct">State &amp; federal licenses</span><span class="badge b-oc">NJ / US</span></div>
+        <div class="pl" id="state-pl"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">Town compliance overview</span><button class="btn btn-s" onclick="go('towns')">Manage towns</button></div>
+      <div class="town-list" id="dash-towns"></div>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-towns">
+    <div class="fb">
+      <input class="si" placeholder="Search towns or county..." oninput="renderTowns()" id="town-search">
+      <button class="chip on" onclick="setTF('all',this)">All</button>
+      <button class="chip" onclick="setTF('compliant',this)">Compliant</button>
+      <button class="chip" onclick="setTF('pending',this)">Pending</button>
+      <button class="chip" onclick="setTF('expired',this)">Expired</button>
+      <button class="btn btn-p btn-s" onclick="openAddTown()">+ Add town</button>
+    </div>
+    <div class="town-list" id="towns-list"></div>
+  </div>
+
+  <div class="tab" id="tab-permits">
+    <div class="fb">
+      <span style="font-size:11.5px;color:var(--tx2);font-weight:500">Town:</span>
+      <select class="fi" style="width:auto;padding:5px 8px;font-size:11.5px" onchange="renderPermits()" id="perm-town-sel"></select>
+      <button class="chip on" onclick="setPF('all',this)">All types</button>
+      <button class="chip" onclick="setPF('municipal',this)">Municipal</button>
+      <button class="chip" onclick="setPF('state',this)">State</button>
+      <button class="chip" onclick="setPF('federal',this)">Federal</button>
+    </div>
+    <div id="permits-out"></div>
+  </div>
+
+  <div class="tab" id="tab-cal">
+    <div class="card">
+      <div class="ch">
+        <span class="ct">All compliance deadlines</span>
+        <div style="display:flex;gap:6px">
+          <span class="badge b-re">Urgent &lt;30d</span>
+          <span class="badge b-am">Soon 30-90d</span>
+          <span class="badge b-gr">On track</span>
+        </div>
+      </div>
+      <div class="dl" id="all-dl"></div>
+    </div>
+  </div>
+
+  <div class="tab" id="tab-expand">
+    <div class="card" style="margin-bottom:10px">
+      <div class="ch"><span class="ct">Prospect towns</span><span style="font-size:11px;color:var(--tx2)">Ranked by feasibility · click to see requirements</span></div>
+      <div class="pg" id="prospect-grid"></div>
+    </div>
+    <div class="card" id="prospect-detail" style="display:none">
+      <div class="ch" id="pd-header"></div>
+      <div id="pd-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TOWN -->
+<div class="modal-wrap" id="modal-add">
+  <div class="modal">
+    <div class="mh"><span class="mt">Add new town</span><button class="mc" onclick="closeModal('modal-add')">&#10005;</button></div>
+    <div class="fg"><label class="fl">Town name</label><input class="fi" id="at-name" placeholder="e.g. Belmar"></div>
+    <div class="fg"><label class="fl">County</label>
+      <select class="fi" id="at-county"><option>Monmouth</option><option>Ocean</option><option>Atlantic</option><option>Cape May</option><option>Middlesex</option></select>
+    </div>
+    <div class="fg"><label class="fl">Beach badge program</label>
+      <select class="fi" id="at-badge"><option>Seasonal</option><option>Daily</option><option>Free beach</option></select>
+    </div>
+    <div class="fg"><label class="fl">Permit status</label>
+      <select class="fi" id="at-status"><option value="pending">Pending</option><option value="compliant">Compliant</option><option value="expired">Expired</option></select>
+    </div>
+    <div class="fg"><label class="fl">Contact name / notes</label><input class="fi" id="at-notes" placeholder="Contact name, phone, etc."></div>
+    <div class="ma"><button class="btn" onclick="closeModal('modal-add')">Cancel</button><button class="btn btn-p" onclick="saveNewTown()">Add town</button></div>
+  </div>
+</div>
+
+<!-- ADD/EDIT PERMIT -->
+<div class="modal-wrap" id="modal-permit">
+  <div class="modal">
+    <div class="mh"><span class="mt" id="mp-title">Add permit</span><button class="mc" onclick="closeModal('modal-permit')">&#10005;</button></div>
+    <div class="fg"><label class="fl">Permit / requirement name</label><input class="fi" id="mp-name" placeholder="e.g. Beach Vendor License"></div>
+    <div class="fg"><label class="fl">Type</label>
+      <select class="fi" id="mp-type"><option value="municipal">Municipal</option><option value="state">State</option><option value="federal">Federal</option></select>
+    </div>
+    <div class="fg"><label class="fl">Status</label>
+      <select class="fi" id="mp-status"><option value="done">Active / approved</option><option value="warn">Expiring soon</option><option value="miss">Missing / required</option></select>
+    </div>
+    <div class="fg"><label class="fl">Expiration or due date</label><input class="fi" id="mp-exp" placeholder="2026-09-30 or 'Required'"></div>
+    <div class="ma"><button class="btn" onclick="closeModal('modal-permit')">Cancel</button><button class="btn btn-p" onclick="savePermit()">Save permit</button></div>
+  </div>
+</div>
+
+<!-- EDIT TOWN -->
+<div class="modal-wrap" id="modal-edit">
+  <div class="modal">
+    <div class="mh"><span class="mt">Edit town</span><button class="mc" onclick="closeModal('modal-edit')">&#10005;</button></div>
+    <div class="fg"><label class="fl">Town name</label><input class="fi" id="et-name"></div>
+    <div class="fg"><label class="fl">County</label>
+      <select class="fi" id="et-county"><option>Monmouth</option><option>Ocean</option><option>Atlantic</option><option>Cape May</option><option>Middlesex</option></select>
+    </div>
+    <div class="fg"><label class="fl">Beach badge program</label>
+      <select class="fi" id="et-badge"><option>Seasonal</option><option>Daily</option><option>Free beach</option></select>
+    </div>
+    <div class="fg"><label class="fl">Contact</label><input class="fi" id="et-contact"></div>
+    <div class="fg"><label class="fl">Phone</label><input class="fi" id="et-phone"></div>
+    <div class="fg"><label class="fl">License fee</label><input class="fi" id="et-fee"></div>
+    <div class="fg"><label class="fl">Setup zones</label><input class="fi" id="et-zones" type="number" min="1"></div>
+    <div class="ma">
+      <button class="btn btn-s" style="color:var(--re);border-color:var(--re)" onclick="deleteCurrentTown()">Delete town</button>
+      <button class="btn" onclick="closeModal('modal-edit')">Cancel</button>
+      <button class="btn btn-p" onclick="saveEditTown()">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let season=2026;
+const REF=new Date('2026-03-16');
+let activeTab='dash',townFilter='all',permitFilter='all',editTownId=null,permitTargetId=null,editPermitId=null,selectedProspect=null;
+
+const stateLicenses=[
+  {name:'NJ Business Registration',status:'done',exp:'2026-12-31',type:'state'},
+  {name:'NJ DEP Coastal Zone Permit',status:'done',exp:'2026-10-01',type:'state'},
+  {name:'NJ Sales Tax Certificate',status:'done',exp:'Permanent',type:'state'},
+  {name:'General Liability Insurance ($2M)',status:'done',exp:'2026-12-01',type:'state'},
+  {name:'Federal EIN / Worker Permits',status:'done',exp:'Permanent',type:'federal'},
+];
+
+let towns=[
+  {id:1,name:'Point Pleasant Beach',county:'Ocean',status:'compliant',score:100,badge:'Seasonal',contact:'Jennifer Walsh',phone:'732-892-1118',fee:'$2,400/season',zones:3,permits:[
+    {id:101,name:'Beach Vendor License',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:102,name:'Special Event Permit',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:103,name:'Zoning Approval - Boardwalk',status:'done',exp:'2026-12-31',type:'municipal'},
+  ]},
+  {id:2,name:'Seaside Heights',county:'Ocean',status:'compliant',score:100,badge:'Seasonal',contact:'Mark DeVito',phone:'732-793-9100',fee:'$1,800/season',zones:4,permits:[
+    {id:201,name:'Beach Vendor License',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:202,name:'Amusement / Recreation Permit',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:203,name:'Fire Marshal Inspection',status:'done',exp:'2026-06-01',type:'municipal'},
+  ]},
+  {id:3,name:'Asbury Park',county:'Monmouth',status:'compliant',score:100,badge:'Free beach',contact:'City Clerk Office',phone:'732-775-2100',fee:'$3,100/season',zones:2,permits:[
+    {id:301,name:'Beach Operator Permit',status:'done',exp:'2026-10-31',type:'municipal'},
+    {id:302,name:'Commercial Use Agreement',status:'done',exp:'2026-12-31',type:'municipal'},
+    {id:303,name:'ADA Compliance Cert.',status:'done',exp:'2026-12-31',type:'state'},
+  ]},
+  {id:4,name:'Belmar',county:'Monmouth',status:'pending',score:60,badge:'Seasonal',contact:'Borough Hall',phone:'732-681-3700',fee:'$1,950/season',zones:3,permits:[
+    {id:401,name:'Beach Vendor License',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:402,name:'Health Dept Inspection',status:'warn',exp:'2026-06-30',type:'municipal'},
+    {id:403,name:'DPW Encroachment Permit',status:'miss',exp:'Required',type:'municipal'},
+  ]},
+  {id:5,name:'Spring Lake',county:'Monmouth',status:'compliant',score:100,badge:'Seasonal',contact:'Borough Clerk',phone:'732-449-0800',fee:'$2,200/season',zones:2,permits:[
+    {id:501,name:'Commercial Beach Permit',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:502,name:'Seasonal Concession License',status:'done',exp:'2026-09-30',type:'municipal'},
+  ]},
+  {id:6,name:'Lavallette',county:'Ocean',status:'pending',score:67,badge:'Seasonal',contact:"Mayor's Office",phone:'732-793-7477',fee:'$1,600/season',zones:2,permits:[
+    {id:601,name:'Beach Vendor License',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:602,name:'Seasonal Business Registration',status:'warn',exp:'2026-06-20',type:'municipal'},
+    {id:603,name:'Insurance Certificate on File',status:'done',exp:'2026-12-01',type:'municipal'},
+  ]},
+  {id:7,name:'Manasquan',county:'Monmouth',status:'compliant',score:100,badge:'Seasonal',contact:"Clerk's Office",phone:'732-223-0544',fee:'$1,750/season',zones:2,permits:[
+    {id:701,name:'Beach Operator License',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:702,name:'Municipal Court Bond',status:'done',exp:'2026-12-31',type:'municipal'},
+  ]},
+  {id:8,name:'LBI / Ship Bottom',county:'Ocean',status:'pending',score:33,badge:'Daily / Seasonal',contact:'Ship Bottom Borough',phone:'609-494-2171',fee:'$2,800/season',zones:5,permits:[
+    {id:801,name:'LBI Joint Beach Commission Permit',status:'warn',exp:'2026-07-01',type:'municipal'},
+    {id:802,name:'Beach Chair/Umbrella License',status:'miss',exp:'Required',type:'municipal'},
+    {id:803,name:'Liability Waiver on File',status:'done',exp:'2026-12-01',type:'municipal'},
+    {id:804,name:'Seasonal Storage Agreement',status:'miss',exp:'Required',type:'municipal'},
+  ]},
+  {id:9,name:'Avalon',county:'Cape May',status:'compliant',score:100,badge:'Seasonal',contact:'Borough Hall',phone:'609-967-3066',fee:'$3,400/season',zones:3,permits:[
+    {id:901,name:'Beach Concession License',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:902,name:'Dune Protection Compliance',status:'done',exp:'2026-12-31',type:'state'},
+    {id:903,name:'Seasonal Employee Reg.',status:'done',exp:'2026-12-31',type:'state'},
+  ]},
+  {id:10,name:'Wildwood',county:'Cape May',status:'compliant',score:100,badge:'Free beach',contact:'City Business Office',phone:'609-522-2444',fee:'$2,100/season',zones:6,permits:[
+    {id:1001,name:'Beach Equipment Vendor License',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:1002,name:'Boardwalk Operator Permit',status:'done',exp:'2026-09-30',type:'municipal'},
+    {id:1003,name:'Cape May Co. Health Cert.',status:'done',exp:'2026-12-31',type:'state'},
+  ]},
+  {id:11,name:'Sea Isle City',county:'Cape May',status:'expired',score:0,badge:'Seasonal',contact:'City Hall',phone:'609-263-4461',fee:'$1,900/season',zones:2,permits:[
+    {id:1101,name:'Beach Vendor License',status:'miss',exp:'EXPIRED 2025-09-30',type:'municipal'},
+    {id:1102,name:'Annual Business Renewal',status:'miss',exp:'EXPIRED 2026-01-15',type:'municipal'},
+    {id:1103,name:'Liability Insurance',status:'warn',exp:'2026-08-01',type:'municipal'},
+  ]},
+];
+
+let prospects=[
+  {name:'Mantoloking',county:'Ocean',len:'1.2mi',fee:'~$3,200',complexity:'Low',score:88,badge:'Seasonal',reqs:['Private beach comm. approval','Ocean Co. health cert.','Liability insurance $2M+','DPW coordination'],note:'Very small, affluent community. Limited spots but high revenue per unit.'},
+  {name:'Bay Head',county:'Ocean',len:'0.8mi',fee:'~$2,800',complexity:'Low',score:82,badge:'Seasonal',reqs:['Bay Head Beach Assoc. vote','Annual vendor license','DPW permit','Insurance on file'],note:'Semi-private beach association controls access. Relationship-driven approval.'},
+  {name:'Ortley Beach',county:'Ocean',len:'1.8mi',fee:'~$2,100',complexity:'Medium',score:79,badge:'Seasonal',reqs:['Toms River Township approval','Ocean Co. health cert.','DPW encroachment permit','Seasonal registration'],note:'Part of Toms River Township. Single municipal contact simplifies process.'},
+  {name:'Normandy Beach',county:'Ocean',len:'1.4mi',fee:'~$1,600',complexity:'Medium',score:76,badge:'Seasonal',reqs:['Borough vendor license','Ocean Co. health inspection','Fire marshal OK','Seasonal storage permit'],note:'Quieter market, lower competition. Streamlined permit process.'},
+  {name:'Brigantine',county:'Atlantic',len:'7mi',fee:'~$2,400',complexity:'Medium',score:74,badge:'Seasonal',reqs:['Brigantine vendor license','Atlantic Co. health cert.','Zone-specific approval','Seasonal employee reg.'],note:'Long beachfront with good density. Atlantic Co. health dept required.'},
+  {name:'Cape May City',county:'Cape May',len:'2.5mi',fee:'~$4,100',complexity:'High',score:71,badge:'Seasonal',reqs:['Historic preservation review','Beach Comm. approval','Cape May City vendor license','NJ DEP dune cert.','NPS consultation (federal)'],note:'Highest revenue potential. Complex: historic district + NPS involvement.'},
+];
+
+const deadlines=[
+  {town:'Lavallette',type:'Seasonal Business Registration renewal',date:'2026-06-20',urgency:'urgent'},
+  {town:'Belmar',type:'Health Dept Inspection due',date:'2026-06-30',urgency:'urgent'},
+  {town:'LBI / Ship Bottom',type:'Joint Beach Commission Permit deadline',date:'2026-07-01',urgency:'urgent'},
+  {town:'Sea Isle City',type:'Business license reinstatement required',date:'2026-07-15',urgency:'urgent'},
+  {town:'Belmar',type:'DPW Encroachment Permit filing',date:'2026-07-20',urgency:'soon'},
+  {town:'LBI / Ship Bottom',type:'Beach Chair/Umbrella License filing',date:'2026-07-25',urgency:'soon'},
+  {town:'LBI / Ship Bottom',type:'Seasonal Storage Agreement',date:'2026-07-25',urgency:'soon'},
+  {town:'Sea Isle City',type:'Liability Insurance renewal',date:'2026-08-01',urgency:'soon'},
+  {town:'NJ DEP',type:'Coastal Zone Permit renewal',date:'2026-10-01',urgency:'ok'},
+  {town:'All towns',type:'Municipal permits annual renewal',date:'2026-09-30',urgency:'ok'},
+  {town:'General Liability',type:'Annual insurance renewal',date:'2026-12-01',urgency:'ok'},
+];
+
+function updateSeason(val){
+  const y=parseInt(val);
+  if(y>2020&&y<2100){season=y;document.getElementById('season-year').value=y;}
+}
+
+function daysLeft(ds){
+  if(!ds||ds==='Permanent'||ds.includes('EXPIRED')||ds==='Required')return null;
+  return Math.round((new Date(ds)-REF)/86400000);
+}
+function daysLabel(ds){
+  const d=daysLeft(ds);
+  if(d===null)return'';
+  if(d<0)return'Past due';
+  if(d===0)return'Today';
+  return d+'d left';
+}
+function statusBadge(s){
+  if(s==='compliant')return'<span class="badge b-gr">Compliant</span>';
+  if(s==='pending')return'<span class="badge b-am">Pending</span>';
+  return'<span class="badge b-re">Expired</span>';
+}
+function pcIcon(s){return s==='done'?'&#10003;':s==='warn'?'!':'&#10007;';}
+function barClass(pct){return pct===100?'gr':pct>=40?'am':'re';}
+function recalcTown(t){
+  if(!t.permits.length){t.score=0;t.status='pending';return;}
+  const done=t.permits.filter(p=>p.status==='done').length;
+  t.score=Math.round(done/t.permits.length*100);
+  t.status=t.score===100?'compliant':t.score>0?'pending':'expired';
+}
+
+function go(tab){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('tab-'+tab).classList.add('on');
+  document.querySelectorAll('.nb').forEach((b,i)=>{
+    b.classList.toggle('on',['dash','towns','permits','cal','expand'][i]===tab);
+  });
+  if(tab==='dash')renderDash();
+  if(tab==='towns')renderTowns();
+  if(tab==='permits')renderPermits();
+  if(tab==='cal')renderCal();
+  if(tab==='expand')renderExpand();
+}
+
+function renderDash(){
+  const comp=towns.filter(t=>t.status==='compliant').length;
+  const pend=towns.filter(t=>t.status==='pending').length;
+  const exp=towns.filter(t=>t.status==='expired').length;
+  document.getElementById('dash-stats').innerHTML=`
+    <div class="sc"><div class="sn oc">${towns.length}</div><div class="sl">Active towns</div></div>
+    <div class="sc"><div class="sn gr">${comp}</div><div class="sl">Fully compliant</div></div>
+    <div class="sc"><div class="sn am">${pend}</div><div class="sl">Action needed</div></div>
+    <div class="sc"><div class="sn re">${exp}</div><div class="sl">Expired / lapsed</div></div>`;
+  const urgent=deadlines.filter(d=>d.urgency==='urgent');
+  document.getElementById('urg-count').textContent=urgent.length+' urgent';
+  document.getElementById('dash-dl').innerHTML=urgent.slice(0,4).map(d=>`
+    <div class="di2 urgent">
+      <div class="dd">${d.date.slice(5)}</div>
+      <div><div class="dt">${d.town}</div><div class="ds">${d.type}</div></div>
+      <div class="ddays urgent">${daysLabel(d.date)}</div>
+    </div>`).join('');
+  document.getElementById('state-pl').innerHTML=stateLicenses.map(p=>`
+    <div class="pi ${p.status}">
+      <div class="pc ${p.status}">${pcIcon(p.status)}</div>
+      <div class="pn">${p.name}</div>
+      <div class="pe">${p.exp}</div>
+    </div>`).join('');
+  document.getElementById('dash-towns').innerHTML=towns.map(t=>townRowHtml(t,false)).join('');
+}
+
+function townRowHtml(t,expand){
+  const bc=barClass(t.score);
+  const tags=t.permits.slice(0,3).map(p=>`<span class="badge ${p.status==='done'?'b-gr':p.status==='warn'?'b-am':'b-re'}">${p.name.length>18?p.name.slice(0,16)+'...':p.name}</span>`).join('');
+  const extra=t.permits.length>3?`<span class="badge b-gy">+${t.permits.length-3}</span>`:'';
+  const detailHtml=expand?`<div class="dp" id="dp-${t.id}">
+    <div class="dg">
+      <div class="di"><label>Contact</label><span>${t.contact}</span></div>
+      <div class="di"><label>Phone</label><span>${t.phone}</span></div>
+      <div class="di"><label>License fee</label><span>${t.fee||'TBD'}</span></div>
+      <div class="di"><label>Beach badge</label><span>${t.badge}</span></div>
+      <div class="di"><label>Setup zones</label><span>${t.zones} location${t.zones!==1?'s':''}</span></div>
+      <div class="di"><label>Compliance</label><span>${t.score}%</span></div>
+    </div>
+    <div class="sect">Permits &amp; requirements</div>
+    <div class="pl">${t.permits.map(p=>`
+      <div class="pi ${p.status}">
+        <div class="pc ${p.status}">${pcIcon(p.status)}</div>
+        <div class="pn">${p.name}</div>
+        <div class="pe">${p.exp}</div>
+        <span class="badge b-gy">${p.type}</span>
+        <button class="btn btn-s" style="padding:2px 7px;font-size:10px" onclick="openEditPermit(${t.id},${p.id})">Edit</button>
+      </div>`).join('')}
+    </div>
+    <div class="inline-btns">
+      <button class="btn btn-s" onclick="openAddPermit(${t.id})">+ Add permit</button>
+      <button class="btn btn-s" onclick="markAllDone(${t.id})">Mark all compliant</button>
+      <button class="btn btn-s" style="margin-left:auto" onclick="openEdit(${t.id})">Edit town</button>
+    </div>
+  </div>`:'';
+  return`<div>
+    <div class="tr${expand?' expandable':''}" onclick="${expand?`toggleDP(${t.id})`:''}" style="${expand?'':'cursor:default'}">
+      <div><div class="tn">${t.name}</div><div class="tc">${t.county} Co.</div></div>
+      <div class="tag-row">${tags}${extra}</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div><div class="pbar"><div class="pf ${bc}" style="width:${t.score}%"></div></div><div style="font-size:10px;color:var(--tx2);margin-top:2px;text-align:right">${t.score}%</div></div>
+        ${statusBadge(t.status)}
+      </div>
+    </div>${detailHtml}</div>`;
+}
+
+function toggleDP(id){
+  const dp=document.getElementById('dp-'+id);
+  dp.classList.toggle('on');
+  dp.previousElementSibling.classList.toggle('exp');
+}
+
+function renderTowns(){
+  const search=(document.getElementById('town-search').value||'').toLowerCase();
+  const filtered=towns.filter(t=>{
+    const ms=t.name.toLowerCase().includes(search)||t.county.toLowerCase().includes(search);
+    const mf=townFilter==='all'||t.status===townFilter;
+    return ms&&mf;
+  });
+  document.getElementById('towns-list').innerHTML=filtered.length?filtered.map(t=>townRowHtml(t,true)).join(''):`<div class="empty">No towns match your filter.</div>`;
+}
+
+function setTF(f,el){
+  townFilter=f;
+  document.querySelectorAll('#tab-towns .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  renderTowns();
+}
+
+function renderPermits(){
+  const sel=document.getElementById('perm-town-sel');
+  const curVal=sel.value;
+  sel.innerHTML='<option value="all">All towns</option>'+towns.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
+  if(curVal)sel.value=curVal;
+  const tv=sel.value;
+  let all=[...stateLicenses.map(p=>({...p,town:'State / Federal',tid:0}))];
+  towns.forEach(t=>t.permits.forEach(p=>all.push({...p,town:t.name,tid:t.id})));
+  const filtered=all.filter(p=>{
+    const mt=tv==='all'||String(p.tid)===tv;
+    const mf=permitFilter==='all'||p.type===permitFilter;
+    return mt&&mf;
+  });
+  document.getElementById('permits-out').innerHTML=filtered.length?filtered.map(p=>`
+    <div class="pfr ${p.status}">
+      <div class="pc ${p.status}">${pcIcon(p.status)}</div>
+      <div class="pn" style="flex:1.5">${p.name}</div>
+      <div style="flex:1;font-size:11px;color:var(--tx2)">${p.town}</div>
+      <div class="pe">${p.exp}</div>
+      <span class="badge b-gy">${p.type}</span>
+      <span class="badge ${p.status==='done'?'b-gr':p.status==='warn'?'b-am':'b-re'}">${p.status==='done'?'Active':p.status==='warn'?'Expiring':'Missing'}</span>
+    </div>`).join(''):`<div class="empty">No permits match your filter.</div>`;
+}
+
+function setPF(f,el){
+  permitFilter=f;
+  document.querySelectorAll('#tab-permits .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  renderPermits();
+}
+
+function renderCal(){
+  const sorted=[...deadlines].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  document.getElementById('all-dl').innerHTML=sorted.map(d=>`
+    <div class="di2 ${d.urgency}">
+      <div class="dd">${d.date.slice(5)}</div>
+      <div style="flex:1"><div class="dt">${d.town}</div><div class="ds">${d.type}</div></div>
+      <div class="ddays ${d.urgency}">${daysLabel(d.date)}</div>
+    </div>`).join('');
+}
+
+function renderExpand(){
+  document.getElementById('prospect-grid').innerHTML=prospects.map((p,i)=>`
+    <div class="pc2${selectedProspect===i?' on':''}" onclick="selectProspect(${i})">
+      <div class="pname">${p.name}</div>
+      <div class="pdet">${p.county} Co. &middot; ${p.len} &middot; Est. ${p.fee}/season</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+        <div class="sbar" style="flex:1"><div class="sf" style="width:${p.score}%"></div></div>
+        <span style="font-size:12px;font-weight:500;color:var(--ocean)">${p.score}/100</span>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <span class="badge ${p.complexity==='Low'?'b-gr':p.complexity==='Medium'?'b-am':'b-re'}">${p.complexity} complexity</span>
+        <span class="badge b-oc">${p.badge}</span>
+      </div>
+    </div>`).join('');
+}
+
+function selectProspect(i){
+  selectedProspect=i;
+  const p=prospects[i];
+  document.getElementById('prospect-detail').style.display='block';
+  document.getElementById('pd-header').innerHTML=`<span class="ct">${p.name} — permit requirements</span><button class="btn btn-p btn-s" onclick="addProspect(${i})">Add to active towns</button>`;
+  document.getElementById('pd-body').innerHTML=`
+    <div class="stats" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:12px">
+      <div class="sc"><div class="sn oc">${p.score}</div><div class="sl">Feasibility score</div></div>
+      <div class="sc"><div class="sn ${p.complexity==='Low'?'gr':p.complexity==='Medium'?'am':'re'}">${p.complexity}</div><div class="sl">Complexity</div></div>
+      <div class="sc"><div class="sn gr">${p.fee}</div><div class="sl">Est. annual fee</div></div>
+    </div>
+    <div class="sect">Required permits &amp; steps</div>
+    <div class="pl">${p.reqs.map(r=>`<div class="pi"><div class="pc" style="background:var(--ocean);color:#fff">&#8594;</div><div class="pn">${r}</div></div>`).join('')}</div>
+    <div class="note-box"><strong>Notes:</strong> ${p.note}</div>`;
+  renderExpand();
+}
+
+function addProspect(i){
+  const p=prospects[i];
+  const newId=Date.now();
+  towns.push({id:newId,name:p.name,county:p.county,status:'pending',score:0,badge:p.badge,contact:'TBD',phone:'TBD',fee:p.fee+'/season',zones:1,
+    permits:p.reqs.map((r,j)=>({id:newId*100+j,name:r,status:'miss',exp:'Required',type:'municipal'}))});
+  prospects.splice(i,1);
+  selectedProspect=null;
+  document.getElementById('prospect-detail').style.display='none';
+  renderExpand();
+  renderDash();
+  alert(p.name+' added to active towns. Visit the Towns tab to complete permit details.');
+}
+
+function openAddTown(){document.getElementById('modal-add').classList.add('on');}
+function closeModal(id){document.getElementById(id).classList.remove('on');}
+
+function saveNewTown(){
+  const name=document.getElementById('at-name').value.trim();
+  if(!name){alert('Please enter a town name.');return;}
+  const status=document.getElementById('at-status').value;
+  const newId=Date.now();
+  towns.push({id:newId,name,county:document.getElementById('at-county').value,status,
+    score:status==='compliant'?100:status==='pending'?50:0,
+    badge:document.getElementById('at-badge').value,
+    contact:document.getElementById('at-notes').value||'TBD',
+    phone:'TBD',fee:'TBD',zones:1,
+    permits:[{id:newId+1,name:'Municipal Vendor License',status:status==='compliant'?'done':status==='pending'?'warn':'miss',exp:status==='compliant'?season+'-09-30':'Required',type:'municipal'}]});
+  closeModal('modal-add');
+  document.getElementById('at-name').value='';
+  document.getElementById('at-notes').value='';
+  renderDash();
+  if(activeTab==='towns')renderTowns();
+}
+
+function openEdit(id){
+  editTownId=id;
+  const t=towns.find(t=>t.id===id);
+  document.getElementById('et-name').value=t.name;
+  document.getElementById('et-county').value=t.county;
+  document.getElementById('et-badge').value=t.badge;
+  document.getElementById('et-contact').value=t.contact;
+  document.getElementById('et-phone').value=t.phone;
+  document.getElementById('et-fee').value=t.fee||'';
+  document.getElementById('et-zones').value=t.zones||1;
+  document.getElementById('modal-edit').classList.add('on');
+}
+
+function saveEditTown(){
+  const t=towns.find(t=>t.id===editTownId);
+  t.name=document.getElementById('et-name').value.trim()||t.name;
+  t.county=document.getElementById('et-county').value;
+  t.badge=document.getElementById('et-badge').value;
+  t.contact=document.getElementById('et-contact').value||t.contact;
+  t.phone=document.getElementById('et-phone').value||t.phone;
+  t.fee=document.getElementById('et-fee').value||t.fee;
+  t.zones=parseInt(document.getElementById('et-zones').value)||t.zones;
+  closeModal('modal-edit');
+  renderTowns();renderDash();
+}
+
+function deleteCurrentTown(){
+  if(!confirm('Delete this town and all its permits?'))return;
+  towns=towns.filter(t=>t.id!==editTownId);
+  closeModal('modal-edit');
+  renderTowns();renderDash();
+}
+
+function openAddPermit(townId){
+  permitTargetId=townId;editPermitId=null;
+  document.getElementById('mp-title').textContent='Add permit';
+  document.getElementById('mp-name').value='';
+  document.getElementById('mp-type').value='municipal';
+  document.getElementById('mp-status').value='miss';
+  document.getElementById('mp-exp').value='';
+  document.getElementById('modal-permit').classList.add('on');
+}
+
+function openEditPermit(townId,permId){
+  permitTargetId=townId;editPermitId=permId;
+  const t=towns.find(t=>t.id===townId);
+  const p=t.permits.find(p=>p.id===permId);
+  document.getElementById('mp-title').textContent='Edit permit';
+  document.getElementById('mp-name').value=p.name;
+  document.getElementById('mp-type').value=p.type;
+  document.getElementById('mp-status').value=p.status;
+  document.getElementById('mp-exp').value=p.exp;
+  document.getElementById('modal-permit').classList.add('on');
+}
+
+function savePermit(){
+  const name=document.getElementById('mp-name').value.trim();
+  if(!name){alert('Please enter a permit name.');return;}
+  const t=towns.find(t=>t.id===permitTargetId);
+  if(editPermitId){
+    const p=t.permits.find(p=>p.id===editPermitId);
+    p.name=name;p.type=document.getElementById('mp-type').value;
+    p.status=document.getElementById('mp-status').value;
+    p.exp=document.getElementById('mp-exp').value||'Required';
+  } else {
+    t.permits.push({id:Date.now(),name,type:document.getElementById('mp-type').value,
+      status:document.getElementById('mp-status').value,
+      exp:document.getElementById('mp-exp').value||'Required'});
+  }
+  recalcTown(t);
+  closeModal('modal-permit');
+  renderTowns();renderDash();
+}
+
+function markAllDone(townId){
+  const t=towns.find(t=>t.id===townId);
+  t.permits.forEach(p=>{p.status='done';});
+  recalcTown(t);
+  renderTowns();renderDash();
+}
+
+document.querySelectorAll('.modal-wrap').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on');});
+});
+
+renderDash();
+renderPermits();
+</script>
